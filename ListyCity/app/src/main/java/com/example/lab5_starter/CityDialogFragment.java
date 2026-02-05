@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ public class CityDialogFragment extends DialogFragment {
     interface CityDialogListener {
         void updateCity(City city, String title, String year);
         void addCity(City city);
+        void removeCity(City city);
     }
     private CityDialogListener listener;
 
@@ -51,6 +53,8 @@ public class CityDialogFragment extends DialogFragment {
         Bundle bundle = getArguments();
         City city;
 
+//        Button delBtn = view.findViewById()
+
         if (Objects.equals(tag, "City Details") && bundle != null){
             city = (City) bundle.getSerializable("City");
             assert city != null;
@@ -61,8 +65,7 @@ public class CityDialogFragment extends DialogFragment {
             city = null;}
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        return builder
-                .setView(view)
+        builder.setView(view)
                 .setTitle("City Details")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Continue", (dialog, which) -> {
@@ -73,7 +76,14 @@ public class CityDialogFragment extends DialogFragment {
                     } else {
                         listener.addCity(new City(title, year));
                     }
-                })
-                .create();
+                });
+        if (city != null) {
+            builder.setNeutralButton("Delete", (dialog, which) -> {
+                String title = editMovieName.getText().toString();
+                String year = editMovieYear.getText().toString();
+                listener.removeCity(new City(title, year));
+            });
+        }
+        return builder.create();
     }
 }
